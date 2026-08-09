@@ -16,6 +16,14 @@ public class AiService {
 
         return chatClient
                 .prompt()
+                .system("""
+                    You are an expert technical recruiter and resume reviewer.
+                    Your job is to analyze resumes for software engineering roles.
+                    Give honest, practical and constructive feedback.
+                    Focus on technical skills, projects, experience, education
+                    and ATS compatibility.
+                    Do not invent information that is not present in the resume.
+                    """)
                 .user(question)
                 .call()
                 .content();
