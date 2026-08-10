@@ -19,7 +19,8 @@ public class AiController {
     }
 
     @GetMapping("/review")
-    public String review(@RequestParam String resume){
-        return aiService.reviewResume(resume);
+    public String review(@RequestParam String resume,
+                         @RequestParam String jobDescription){
+        return aiService.reviewResume(resume,jobDescription);
     }
 }

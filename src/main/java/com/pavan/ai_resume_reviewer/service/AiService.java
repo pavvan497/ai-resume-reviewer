@@ -12,33 +12,42 @@ public class AiService {
            this.chatClient= builder.build();
     }
 
-    public String reviewResume(String resume) {
+    public String reviewResume(String resume, String jobDescription) {
 
         return chatClient
                 .prompt()
                 .system("""
                     You are an expert technical recruiter and resume reviewer.
-                    Your job is to analyze resumes for software engineering roles.
+
+                    Your job is to compare a candidate's resume with a job description.
+
                     Give honest, practical and constructive feedback.
-                    Focus on technical skills, projects, experience, education
-                    and ATS compatibility.
                     Do not invent information that is not present in the resume.
                     """)
                 .user(user -> user
                         .text("""
-                            Review the following resume.
+                            Analyze the candidate's resume against the job description.
 
                             RESUME:
                             {resume}
 
-                            Provide:
-                            1. Strengths
-                            2. Weaknesses
-                            3. Missing skills
-                            4. Project improvements
-                            5. ATS suggestions
+                            JOB DESCRIPTION:
+                            {jobDescription}
+
+                            Provide the following:
+
+                            1. Matching skills
+                            2. Missing skills
+                            3. Resume strengths
+                            4. Resume weaknesses
+                            5. Project improvement suggestions
+                            6. ATS improvement suggestions
+                            7. Overall suitability for the job
+
+                            Be specific and concise.
                             """)
-                        .param("resume", resume))
+                        .param("resume", resume)
+                        .param("jobDescription", jobDescription))
                 .call()
                 .content();
     }
