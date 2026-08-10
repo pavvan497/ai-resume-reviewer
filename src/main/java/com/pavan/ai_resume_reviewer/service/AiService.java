@@ -12,7 +12,7 @@ public class AiService {
            this.chatClient= builder.build();
     }
 
-    public String ask(String question){
+    public String reviewResume(String resume) {
 
         return chatClient
                 .prompt()
@@ -24,7 +24,21 @@ public class AiService {
                     and ATS compatibility.
                     Do not invent information that is not present in the resume.
                     """)
-                .user(question)
+                .user(user -> user
+                        .text("""
+                            Review the following resume.
+
+                            RESUME:
+                            {resume}
+
+                            Provide:
+                            1. Strengths
+                            2. Weaknesses
+                            3. Missing skills
+                            4. Project improvements
+                            5. ATS suggestions
+                            """)
+                        .param("resume", resume))
                 .call()
                 .content();
     }

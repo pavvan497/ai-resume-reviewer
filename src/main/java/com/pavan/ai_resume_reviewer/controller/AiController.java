@@ -18,8 +18,8 @@ public class AiController {
           this.aiService=aiService;
     }
 
-    @GetMapping("/ask")
-    public String ask(@RequestParam String question){
-        return aiService.ask(question);
+    @GetMapping("/review")
+    public String review(@RequestParam String resume){
+        return aiService.reviewResume(resume);
     }
 }
