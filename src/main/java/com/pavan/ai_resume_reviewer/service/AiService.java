@@ -18,12 +18,21 @@ public class AiService {
         return chatClient
                 .prompt()
                 .system("""
-                    You are an expert technical recruiter and resume reviewer.
+                    You are an expert technical recruiter and ATS resume evaluator.
 
-                    Compare the candidate's resume with the job description.
+                    Your job is to Compare the candidate's resume against a job description.
+                    Evaluate the candidate objectively and do not invent information that is not present in the resume.
 
-                    Return the analysis in the requested structured format.
-                    Do not invent information that is not present in the resume.
+                    calculate match score from 0 to 100 using this evaluate rubric:
+                      -Technical skill match: 40%
+                      -relevant experience and projects: 20%
+                      -Education and qualifications: 15%
+                      -job-specific keyword alignment: 15%
+                      -overall relevance: 10%
+                    
+                    A higher score means the resume is stronger match for the job.
+                    Be realistic and don not give high score simply because some technologies match.
+              
                     """)
                 .user(user -> user
                         .text("""
@@ -35,15 +44,16 @@ public class AiService {
                             JOB DESCRIPTION:
                             {jobDescription}
 
-                            Analyze:
-
-                            - Match score from 0 to 100
-                            - Matching skills
-                            - Missing skills
-                            - Resume strengths
-                            - Resume weaknesses
-                            - Project improvement suggestions
-                            - ATS improvement suggestions
+                            Perform following Analysis:
+                            1.calculate an Ats score from 0 to 100 using evaluation rubric.
+                            2.Identify matching technical skills.
+                            3.identify important missing skills.
+                            4.identify resume strengths relevant to this job.
+                            5.identify weakness relevant to this job.
+                            6.suggest improvement to candidates projects.
+                            7.suggest ATS keyword improvements.
+                            
+                            return a concise and objective evaluation.
                             """)
                         .param("resume", resume)
                         .param("jobDescription", jobDescription))
