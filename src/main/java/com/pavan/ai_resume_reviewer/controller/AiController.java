@@ -20,6 +20,7 @@ import java.io.IOException;
 public class AiController {
 
 
+    private static final long MAX_FILE_SIZE = 5 * 1024 * 1024;
     private final  AiService aiService;
     private final PdfService pdfService;
 
@@ -45,6 +46,24 @@ public class AiController {
             @RequestPart("resume") MultipartFile resume,
             @RequestPart("jobDescription") String jobDescription)
             throws IOException {
+
+        if(resume.isEmpty()){
+            throw new IllegalArgumentException("resume file cannot be empty");
+        }
+
+        if(!resume.getOriginalFilename().toLowerCase().endsWith(".pdf")){
+            throw new IllegalArgumentException("only PDF files are allowed");
+        }
+
+        if(jobDescription== null || jobDescription.isBlank()){
+             throw new IllegalArgumentException("job description cannot be empty");
+        }
+
+        if (resume.getSize() > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException(
+                    "Resume file size must not exceed 5 MB"
+            );
+        }
 
         String resumeText = pdfService.extractText(resume);
 
