@@ -1,16 +1,15 @@
 package com.pavan.ai_resume_reviewer.controller;
 
+import com.pavan.ai_resume_reviewer.model.AdviceRequest;
+import com.pavan.ai_resume_reviewer.model.ApiResponse;
 import com.pavan.ai_resume_reviewer.model.ResumeReview;
 import com.pavan.ai_resume_reviewer.service.AiService;
 import com.pavan.ai_resume_reviewer.service.PdfService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import com.pavan.ai_resume_reviewer.model.ResumeReviewRequest;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import java.io.IOException;
 
 @RestController
@@ -50,24 +49,11 @@ public class AiController {
 
         return pdfService.extractText(resume);
     }
-
-    // PDF resume review with conversation memory
     @PostMapping("/review-pdf")
-    public ResumeReview reviewPdf(
+    public ApiResponse<ResumeReview> reviewPdf(
             @RequestPart("resume") MultipartFile resume,
-            @RequestPart("jobDescription") String jobDescription,
-            @RequestParam("conversationId") String conversationId)
+            @Valid @ModelAttribute ResumeReviewRequest request)
             throws IOException {
-
-        System.out.println(
-                "Conversation ID received: " + conversationId
-        );
-
-        if (conversationId == null || conversationId.isBlank()) {
-            throw new IllegalArgumentException(
-                    "conversationId cannot be empty"
-            );
-        }
 
         if (resume.isEmpty()) {
             throw new IllegalArgumentException(
@@ -85,14 +71,6 @@ public class AiController {
             );
         }
 
-        if (jobDescription == null ||
-                jobDescription.isBlank()) {
-
-            throw new IllegalArgumentException(
-                    "Job description cannot be empty"
-            );
-        }
-
         if (resume.getSize() > MAX_FILE_SIZE) {
             throw new IllegalArgumentException(
                     "Resume file size must not exceed 5 MB"
@@ -102,26 +80,32 @@ public class AiController {
         String resumeText =
                 pdfService.extractText(resume);
 
-        return aiService.reviewResume(
-                resumeText,
-                jobDescription,
-                conversationId
+        return new ApiResponse<>(
+                true,
+                "Resume reviewed successfully",
+                aiService.reviewResume(
+                        resumeText,
+                        request.getJobDescription(),
+                        request.getConversationId()
+                )
         );
     }
 
-    // Follow-up advice using conversation memory
-    @GetMapping("/advice")
-    public String getAdvice(
-            @RequestParam String question,
-            @RequestParam String conversationId) {
 
-        System.out.println(
-                "Advice conversation ID: " + conversationId
+
+    // Follow-up advice using conversation memory
+    @PostMapping("/advice")
+    public ApiResponse<String> getAdvice(@Valid @RequestBody AdviceRequest request) {
+
+        String advice= aiService.getAdvice(
+                request.getQuestion(),
+                request.getConversationId()
         );
 
-        return aiService.getAdvice(
-                question,
-                conversationId
+        return new ApiResponse<>(
+                true,
+                "Advice generated succesfully",
+                advice
         );
     }
 }
