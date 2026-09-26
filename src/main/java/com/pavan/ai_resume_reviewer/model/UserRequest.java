@@ -5,7 +5,6 @@ public class UserRequest {
     private String name;
     private String email;
     private String password;
-    private String role;
 
     public String getName() {
         return name;
@@ -31,11 +30,4 @@ public class UserRequest {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }
