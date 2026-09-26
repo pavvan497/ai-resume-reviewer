@@ -48,8 +48,14 @@ public class SecurityConfig {
                                 "/auth/login"
                         ).permitAll()
 
+                        .requestMatchers("/student/**").hasRole("STUDENT")
+
+                        .requestMatchers("/recruiter/**").hasRole("RECRUITER")
+
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         // Everything else requires JWT authentication
                         .anyRequest().authenticated()
+
                 )
 
                 // Run JWT filter before Spring's username/password filter
