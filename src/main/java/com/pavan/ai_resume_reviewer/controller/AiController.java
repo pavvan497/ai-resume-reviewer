@@ -1,14 +1,14 @@
 package com.pavan.ai_resume_reviewer.controller;
 
-import com.pavan.ai_resume_reviewer.model.AdviceRequest;
-import com.pavan.ai_resume_reviewer.model.ApiResponse;
+import com.pavan.ai_resume_reviewer.dto.AdviceRequest;
+import com.pavan.ai_resume_reviewer.dto.ApiResponse;
 import com.pavan.ai_resume_reviewer.model.ResumeReview;
 import com.pavan.ai_resume_reviewer.service.AiService;
 import com.pavan.ai_resume_reviewer.service.PdfService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.pavan.ai_resume_reviewer.model.ResumeReviewRequest;
+import com.pavan.ai_resume_reviewer.dto.ResumeReviewRequest;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import java.io.IOException;
 

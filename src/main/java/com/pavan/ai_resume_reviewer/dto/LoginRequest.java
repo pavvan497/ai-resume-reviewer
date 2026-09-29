@@ -1,4 +1,4 @@
-package com.pavan.ai_resume_reviewer.model;
+package com.pavan.ai_resume_reviewer.dto;
 
 public class LoginRequest {
 

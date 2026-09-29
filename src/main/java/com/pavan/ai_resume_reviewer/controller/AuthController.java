@@ -1,6 +1,6 @@
 package com.pavan.ai_resume_reviewer.controller;
 
-import com.pavan.ai_resume_reviewer.model.LoginRequest;
+import com.pavan.ai_resume_reviewer.dto.LoginRequest;
 import com.pavan.ai_resume_reviewer.security.JwtService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

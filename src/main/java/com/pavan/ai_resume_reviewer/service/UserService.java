@@ -1,8 +1,8 @@
 package com.pavan.ai_resume_reviewer.service;
 
 import com.pavan.ai_resume_reviewer.entity.User;
-import com.pavan.ai_resume_reviewer.model.UserRequest;
-import com.pavan.ai_resume_reviewer.model.UserResponse;
+import com.pavan.ai_resume_reviewer.dto.UserRequest;
+import com.pavan.ai_resume_reviewer.dto.UserResponse;
 import com.pavan.ai_resume_reviewer.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

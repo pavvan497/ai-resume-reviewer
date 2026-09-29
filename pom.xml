@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.pavan</groupId>
-	<artifactId>ai-resume-reviewer</artifactId>
+	<artifactId>tpo-platform</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>AI Campus Placement Platform</name>
+	<description>AI-Powered Campus Placement and Recruitment Platform (TPO)</description>
 	<url/>
 	<licenses>
 		<license/>
