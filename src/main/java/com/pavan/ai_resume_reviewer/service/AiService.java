@@ -9,18 +9,43 @@ import org.springframework.stereotype.Service;
 public class AiService {
 
     private final ChatClient chatClient;
+    private final ChatMemory chatMemory;
 
     public AiService(
             ChatClient.Builder builder,
             ChatMemory chatMemory) {
 
-        this.chatClient = builder
-                .defaultAdvisors(
-                        org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor
-                                .builder(chatMemory)
-                                .build()
-                )
-                .build();
+        this.chatClient = builder.build();
+        this.chatMemory = chatMemory;
+    }
+
+    // General resume analysis (no job description)
+    public com.pavan.ai_resume_reviewer.model.GeneralResumeReview analyzeResume(String resumeText) {
+        return chatClient
+                .prompt()
+                .system("""
+                        You are an expert technical recruiter and ATS software analyzer.
+
+                        Your job is to objectively analyze the candidate's resume on its own merits, without any specific job description.
+                        Extract the key skills present, evaluate the formatting and general impact of the resume to generate a general ATS score (out of 100).
+                        Provide a brief, constructive feedback summary.
+                        
+                        CRITICAL INSTRUCTION: Return ONLY raw, valid JSON. Do NOT wrap the response in ```json or any other markdown blocks.
+                        """)
+                .user(user -> user
+                        .text("""
+                                Analyze the following resume:
+                                
+                                {resume}
+                                
+                                Perform the following tasks:
+                                1. Calculate a general ATS score from 0 to 100 based on standard ATS best practices (formatting, clarity, impact, buzzwords).
+                                2. Extract a comprehensive list of technical skills found in the resume.
+                                3. Provide concise overall feedback on how the candidate can improve their resume generally.
+                                """)
+                        .param("resume", resumeText))
+                .call()
+                .entity(com.pavan.ai_resume_reviewer.model.GeneralResumeReview.class);
     }
 
     // Existing normal resume review
@@ -45,6 +70,8 @@ public class AiService {
 
                         A higher score means the resume is a stronger match for the job.
                         Be realistic and do not give a high score simply because some technologies match.
+                        
+                        CRITICAL INSTRUCTION: Return ONLY raw, valid JSON. Do NOT wrap the response in ```json or any other markdown blocks.
                         """)
                 .user(user -> user
                         .text("""
@@ -102,6 +129,8 @@ public class AiService {
 
                         A higher score means the resume is a stronger match for the job.
                         Be realistic and do not give a high score simply because some technologies match.
+                        
+                        CRITICAL INSTRUCTION: Return ONLY raw, valid JSON. Do NOT wrap the response in ```json or any other markdown blocks.
                         """)
                 .user(user -> user
                         .text("""
@@ -126,6 +155,7 @@ public class AiService {
                                 """)
                         .param("resume", resume)
                         .param("jobDescription", jobDescription))
+                .advisors(org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .advisors(advisor -> advisor
                         .param(ChatMemory.CONVERSATION_ID, conversationId))
                 .call()
@@ -161,6 +191,7 @@ public class AiService {
                                 {question}
                                 """)
                         .param("question", question))
+                .advisors(org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .advisors(advisor -> advisor
                         .param(ChatMemory.CONVERSATION_ID, conversationId))
                 .call()

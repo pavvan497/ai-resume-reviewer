@@ -62,7 +62,11 @@ public class StudentProfileService {
                 profile.getBranch(),
                 profile.getCgpa(),
                 profile.getGraduationYear(),
-                profile.getSkills()
+                profile.getSkills(),
+                profile.getResumeFileName(),
+                profile.getResumeAtsScore(),
+                profile.getExtractedSkills(),
+                profile.getAiFeedback()
         );
     }
 
@@ -92,7 +96,47 @@ public class StudentProfileService {
                 profile.getBranch(),
                 profile.getCgpa(),
                 profile.getGraduationYear(),
-                profile.getSkills()
+                profile.getSkills(),
+                profile.getResumeFileName(),
+                profile.getResumeAtsScore(),
+                profile.getExtractedSkills(),
+                profile.getAiFeedback()
+        );
+    }
+
+    public com.pavan.ai_resume_reviewer.dto.StudentProfileResponse updateResumeAnalysis(
+            String email,
+            String fileName,
+            Double atsScore,
+            String extractedSkills,
+            String aiFeedback) {
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        StudentProfile profile = studentProfileRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Profile not found"));
+
+        profile.setResumeFileName(fileName);
+        profile.setResumeAtsScore(atsScore);
+        profile.setExtractedSkills(extractedSkills);
+        profile.setAiFeedback(aiFeedback);
+
+        studentProfileRepository.save(profile);
+
+        return new com.pavan.ai_resume_reviewer.dto.StudentProfileResponse(
+                profile.getId(),
+                user.getName(),
+                user.getEmail(),
+                profile.getPhone(),
+                profile.getBranch(),
+                profile.getCgpa(),
+                profile.getGraduationYear(),
+                profile.getSkills(),
+                profile.getResumeFileName(),
+                profile.getResumeAtsScore(),
+                profile.getExtractedSkills(),
+                profile.getAiFeedback()
         );
     }
 }
