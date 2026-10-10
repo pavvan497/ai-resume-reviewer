@@ -47,6 +47,8 @@ public class SecurityConfig {
                                 "/users",
                                 "/auth/login"
                         ).permitAll()
+                        
+                        .requestMatchers(HttpMethod.POST, "/jobs/**").hasRole("RECRUITER")
 
                         .requestMatchers("/student/**").hasRole("STUDENT")
 
