@@ -100,6 +100,39 @@ public class AiService {
                 .entity(ResumeReview.class);
     }
 
+    // Phase 5: Student to Job Matchmaking
+    public com.pavan.ai_resume_reviewer.model.AiMatchResult matchStudentToJob(String studentSkills, String jobDescription) {
+        return chatClient
+                .prompt()
+                .system("""
+                        You are an expert technical recruiter and AI matchmaking engine.
+
+                        Your job is to compare a candidate's verified skills against a job description.
+                        Evaluate the candidate objectively. Do not invent information.
+
+                        Calculate a matchScore from 0 to 100 representing how well the candidate's skills fit the job requirements.
+                        Provide a brief, 2-3 sentence feedback explaining the score (e.g., matching skills, missing skills).
+
+                        CRITICAL INSTRUCTION: Return ONLY raw, valid JSON matching the exact structure. Do NOT wrap the response in ```json or any other markdown blocks.
+                        """)
+                .user(user -> user
+                        .text("""
+                                Analyze the candidate's fit for the job.
+
+                                CANDIDATE SKILLS:
+                                {skills}
+
+                                JOB DESCRIPTION & REQUIREMENTS:
+                                {jobDescription}
+
+                                Return a JSON object with 'matchScore' (double) and 'feedback' (string).
+                                """)
+                        .param("skills", studentSkills)
+                        .param("jobDescription", jobDescription))
+                .call()
+                .entity(com.pavan.ai_resume_reviewer.model.AiMatchResult.class);
+    }
+
     // Memory-enabled resume review
     public ResumeReview reviewResume(
             String resume,

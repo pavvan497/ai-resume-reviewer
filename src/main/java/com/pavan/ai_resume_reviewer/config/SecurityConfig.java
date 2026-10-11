@@ -49,8 +49,9 @@ public class SecurityConfig {
                         ).permitAll()
                         
                         .requestMatchers(HttpMethod.POST, "/jobs/**").hasRole("RECRUITER")
+                        .requestMatchers("/applications/job/**").hasRole("RECRUITER")
 
-                        .requestMatchers("/student/**").hasRole("STUDENT")
+                        .requestMatchers("/student/**", "/applications/apply/**", "/applications/my-applications").hasRole("STUDENT")
 
                         .requestMatchers("/recruiter/**").hasRole("RECRUITER")
 

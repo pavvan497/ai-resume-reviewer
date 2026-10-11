@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface JobDriveRepository extends JpaRepository<JobDrive, Long> {
     List<JobDrive> findByIsActiveTrue();
+    long countByIsActiveTrue();
 }
